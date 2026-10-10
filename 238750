@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desihn – Le dessin que vous imaginez</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5FA;--panel:#fff;--ink:#161B33;--mute:#5B6385;--line:#CAD1E6;--blue:#2D4BFF;--hl:#FFE45C}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1226;--panel:#181C38;--ink:#EEF0FF;--mute:#9AA3CC;--line:#2C3260;--blue:#7C91FF}}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Figtree,system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',Georgia,serif;line-height:1.05;margin:0;letter-spacing:-.02em}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{position:relative;overflow:hidden;border-bottom:1.5px solid var(--ink)}
+.wall{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));grid-auto-rows:150px;gap:6px;padding:6px}
+.wall div{border-radius:6px;overflow:hidden}.wall img{width:100%;height:100%;object-fit:cover;display:block}
+.scrim{position:absolute;inset:0;background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 94%,transparent) 25%,color-mix(in srgb,var(--bg) 60%,transparent))}
+.hero .wrap{position:relative}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0;gap:10px;flex-wrap:wrap}
+.logo{font:800 28px 'Bricolage Grotesque',serif}.logo i{font-style:normal;background:var(--hl);color:#161B33;padding:0 6px;border-radius:4px}
+nav{display:flex;gap:10px;align-items:center}
+.heroin{padding:30px 0 70px;max-width:640px}
+h1{font-size:clamp(40px,7vw,72px);font-weight:800}h1 mark{background:var(--hl);color:#161B33;padding:0 .12em;border-radius:6px}
+.lead{font-size:19px;margin:18px 0 22px}
+.btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn.sm{padding:6px 12px;font-size:14px}
+section{padding:44px 0}h2.t{font-size:clamp(28px,4vw,40px);margin-bottom:6px}.sub{color:var(--mute);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.art{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.art img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}.art .in{padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.art b{display:block}.art small{color:var(--mute)}
+.card,dialog{background:var(--panel);border:1.5px solid var(--ink);border-radius:14px;padding:22px;color:var(--ink)}
+.card{box-shadow:6px 6px 0 var(--ink);max-width:460px}
+dialog{max-width:440px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(10,12,30,.6)}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg)}
+input[type=checkbox]{width:auto;margin-right:8px}
+.notice{background:var(--hl);color:#161B33;border-radius:10px;padding:12px 14px;margin:16px 0 8px;font-size:15px}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.empty{border:1.5px dashed var(--line);border-radius:10px;padding:22px;color:var(--mute)}
+.join{background:var(--ink);color:var(--bg);border-radius:16px;padding:32px;display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap}
+.join h2{font-size:clamp(24px,3.4vw,36px)}.join p{margin:8px 0 0;opacity:.85}.join .btn{background:var(--hl);color:#161B33}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;z-index:99;max-width:90%}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="hero"><div class="wall" id="wall" aria-hidden="true"></div><div class="scrim"></div>
+<div class="wrap"><header><div class="logo">de<i>sih</i>n</div><nav id="nav"></nav></header>
+<div class="heroin"><h1>Votre idée, <mark>dessinée</mark> par un artiste.</h1>
+<p class="lead">Portrait, manga, aquarelle, pixel art… Décrivez ce que vous imaginez et recevez un dessin qui vous ressemble.</p>
+<button class="btn" id="heroBtn">Découvrir les dessins</button></div></div></div>
+
+<div class="wrap">
+<section id="espace" hidden><h2 class="t">Mon espace artiste</h2><p class="sub">Ajoutez un dessin à votre portfolio.</p>
+<form class="card" id="upForm"><label for="uTitle">Titre</label><input id="uTitle" required maxlength="80">
+<label for="uFile">Image</label><input id="uFile" type="file" accept="image/*" required>
+<p style="margin:16px 0 0"><button class="btn" type="submit">Publier le dessin</button></p></form></section>
+
+<section id="galerie"><h2 class="t">Les dessins</h2><p class="sub">Choisissez le style qui vous plaît.</p><div class="grid" id="grid"></div></section>
+
+<section id="rejoindre"><div class="join"><div><h2>Vous dessinez ? Faites-en votre métier.</h2><p>Créez votre profil, fixez vos prix et recevez des demandes de clients.</p></div>
+<button class="btn" id="joinBtn">Devenir artiste</button></div></section>
+</div>
+
+<dialog id="authDlg"><form id="authForm"><h2 id="authT" style="font-size:24px"></h2>
+<div id="signOnly"><label for="aUser">Nom d'utilisateur (minuscules, chiffres, _)</label><input id="aUser" maxlength="30" pattern="[a-z0-9_]{3,30}">
+<label for="aName">Nom affiché</label><input id="aName" maxlength="40"></div>
+<label for="aMail">E-mail</label><input id="aMail" type="email" required autocomplete="email">
+<label for="aPass">Mot de passe (8 caractères minimum)</label><input id="aPass" type="password" minlength="8" required autocomplete="current-password">
+<div class="acts"><button type="button" class="btn ghost" id="swap"></button><button class="btn" type="submit" id="authGo"></button></div></form></dialog>
+
+<dialog id="artDlg"><form id="artForm"><h2 style="font-size:24px">Devenir artiste</h2>
+<label for="rBio">Présentez-vous en une phrase</label><textarea id="rBio" maxlength="300" required></textarea>
+<label for="rStyle">Votre style</label><select id="rStyle"><option>Manga</option><option>Cartoon</option><option>Réaliste</option><option>Pixel art</option><option>Aquarelle</option></select>
+<label for="rPrice">Prix à partir de (€)</label><input id="rPrice" type="number" min="5" value="25" required>
+<div class="notice"><b>À savoir avant de continuer :</b> Desihn prélève 10 % sur chaque gain. Par exemple, pour une commande à 40 €, vous recevez 36 €.</div>
+<label style="font-weight:500"><input type="checkbox" id="rOk" required>J'ai compris et j'accepte ce prélèvement de 10 %.</label>
+<div class="acts"><button type="button" class="btn ghost" id="rCancel">Annuler</button><button class="btn" type="submit">Créer mon profil artiste</button></div></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const sb=supabase.createClient('https://aihoghgplquwiysigejo.supabase.co','sb_publishable_vDj1AZtlASQbHmbNWlFbXA_TGDdMMvY');
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+let user=null,profile=null,artist=null,mode='login';
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),3500)}
+const url=p=>sb.storage.from('artworks').getPublicUrl(p).data.publicUrl;
+
+async function ensureProfile(){
+ let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+ if(!r.data){const m=user.user_metadata||{};
+  const ins=await sb.from('profiles').insert({id:user.id,username:m.username||('user_'+user.id.slice(0,8)),display_name:m.display_name||'Nouveau membre'}).select().single();
+  if(ins.error)toast('Profil non créé : '+ins.error.message);r=ins}
+ profile=r.data;
+ const a=await sb.from('artist_profiles').select('*').eq('user_id',user.id).maybeSingle();artist=a.data}
+async function refresh(){
+ const {data}=await sb.auth.getSession();user=data.session?.user||null;profile=artist=null;
+ if(user)await ensureProfile();
+ renderNav();$('espace').hidden=!artist;loadGallery()}
+function renderNav(){
+ $('nav').innerHTML=user?`<span>${esc(profile?.display_name||user.email)}</span><button class="btn ghost sm" id="out">Déconnexion</button>`:`<button class="btn ghost sm" id="in">Connexion</button><button class="btn sm" id="up">Inscription</button>`;
+ if(user)$('out').onclick=async()=>{await sb.auth.signOut();refresh()};
+ else{$('in').onclick=()=>openAuth('login');$('up').onclick=()=>openAuth('signup')}}
+function openAuth(m){mode=m;$('authT').textContent=m==='login'?'Connexion':'Créer mon compte';
+ $('signOnly').hidden=m==='login';$('aUser').required=$('aName').required=m==='signup';
+ $('authGo').textContent=m==='login'?'Me connecter':'Créer mon compte';$('swap').textContent=m==='login'?'Pas de compte ?':'J\'ai déjà un compte';$('authDlg').showModal()}
+$('swap').onclick=()=>openAuth(mode==='login'?'signup':'login');
+$('authForm').onsubmit=async e=>{e.preventDefault();const email=$('aMail').value.trim(),password=$('aPass').value;let r;
+ if(mode==='signup')r=await sb.auth.signUp({email,password,options:{data:{username:$('aUser').value.trim(),display_name:$('aName').value.trim()}}});
+ else r=await sb.auth.signInWithPassword({email,password});
+ if(r.error)return toast(r.error.message);
+ $('authDlg').close();
+ if(mode==='signup'&&!r.data.session)toast('Compte créé. Confirmez votre e-mail, puis connectez-vous.');else{toast('Bienvenue sur Desihn !');refresh()}};
+$('joinBtn').onclick=()=>{if(!user)return openAuth('signup');if(artist)return toast('Vous êtes déjà artiste.');$('artDlg').showModal()};
+$('rCancel').onclick=()=>$('artDlg').close();
+$('artForm').onsubmit=async e=>{e.preventDefault();
+ const a=await sb.from('artist_profiles').insert({user_id:user.id,bio:$('rBio').value.trim(),styles:[$('rStyle').value],fee_accepted_bps:1000,terms_version:'v1'});
+ if(a.error)return toast(a.error.message);
+ await sb.from('profiles').update({is_artist:true}).eq('id',user.id);
+ await sb.from('services').insert({artist_id:user.id,title:'Dessin sur commande',price_cents:Math.round(+$('rPrice').value*100)});
+ $('artDlg').close();toast('Votre profil artiste est créé.');refresh()};
+$('upForm').onsubmit=async e=>{e.preventDefault();const f=$('uFile').files[0];
+ if(!f)return;if(f.size>5*1024*1024)return toast('Image trop lourde (5 Mo maximum).');
+ const ext=(f.type.split('/')[1]||'jpg').replace('jpeg','jpg'),path=`${user.id}/${Date.now()}.${ext}`;
+ const up=await sb.storage.from('artworks').upload(path,f,{contentType:f.type});
+ if(up.error)return toast(up.error.message);
+ const ins=await sb.from('artworks').insert({artist_id:user.id,title:$('uTitle').value.trim(),image_path:path});
+ if(ins.error)return toast(ins.error.message);
+ $('upForm').reset();toast('Dessin publié !');loadGallery()};
+async function loadGallery(){
+ const {data,error}=await sb.from('artworks').select('id,title,image_path,artist_profiles(profiles(display_name))').order('created_at',{ascending:false}).limit(48);
+ if(error)return $('grid').innerHTML='<div class="empty">Impossible de charger les dessins.</div>';
+ $('grid').innerHTML=data.length?data.map(a=>`<article class="art"><img src="${url(a.image_path)}" alt="${esc(a.title)}" loading="lazy"><div class="in"><div><b>${esc(a.title)}</b><small>par ${esc(a.artist_profiles?.profiles?.display_name||'Artiste')}</small></div><button class="btn sm" data-c="1">Commander</button></div></article>`).join(''):'<div class="empty">Aucun dessin pour l\'instant. Les premiers artistes arrivent bientôt.</div>';
+ const pal=['#2D4BFF','#FFE45C','#FF6B8A','#12805C','#7A5CFF','#FF9F1C'];
+ $('wall').innerHTML=Array.from({length:40},(_,i)=>{const a=data[i%Math.max(data.length,1)];
+  return `<div>${data.length?`<img src="${url(a.image_path)}" alt="">`:`<span style="display:block;height:100%;background:linear-gradient(${i*37%360}deg,${pal[i%6]},${pal[(i+2)%6]})"></span>`}</div>`}).join('')}
+$('grid').onclick=e=>{if(e.target.dataset.c)toast('Les commandes en ligne arrivent à la prochaine étape.')};
+$('heroBtn').onclick=()=>$('galerie').scrollIntoView({behavior:'smooth'});
+sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_IN'||ev==='SIGNED_OUT')setTimeout(refresh,0)});
+refresh();
+</script>
+</body>
+</html>
