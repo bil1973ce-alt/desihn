@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L'Esquisse — Galerie d'Art Contemporain & Cours de Dessin</title>
+
+  <!-- Polices éditoriales Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Configuration Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF9F6',
+            terracotta: {
+              DEFAULT: '#D95D39',
+              hover: '#C04B28',
+              light: '#FDF1ED',
+            },
+            midnight: {
+              DEFAULT: '#1E293B',
+              deep: '#0F172A',
+              card: '#182234',
+            },
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Inter"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'gallery': '0 10px 30px -10px rgba(30, 41, 59, 0.08)',
+            'gallery-hover': '0 20px 40px -12px rgba(30, 41, 59, 0.16)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Transitions fluides et micro-interactions */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FAF9F6;
+      color: #1E293B;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+    .dark body {
+      background-color: #0F172A;
+      color: #F8FAFC;
+    }
+
+    /* Grain subtil façon papier d'art */
+    .paper-texture {
+      background-image: radial-gradient(rgba(30, 41, 59, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+    .dark .paper-texture {
+      background-image: radial-gradient(rgba(248, 250, 252, 0.04) 1px, transparent 0);
+    }
+
+    /* Scrollbar personnalisée */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D95D39;
+    }
+
+    /* Animations subtiles */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-up {
+      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-terracotta selection:text-white">
+
+  <!-- Barre de progression de lecture en haut de l'écran -->
+  <div id="scrollProgressBar" class="fixed top-0 left-0 h-1 bg-terracotta z-50 transition-all duration-150" style="width: 0%;"></div>
+
+  <!-- ===================================================================== -->
+  <!-- BARRE DE NAVIGATION SUPÉRIEURE                                        -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#FAF9F6]/90 dark:bg-midnight-deep/90 border-b border-slate-200/70 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+
+        <!-- Logo de la plateforme -->
+        <a href="#" onclick="resetAllFilters(); return false;" class="flex items-center gap-3 group shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-midnight dark:bg-terracotta text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+              <path d="M2 2l7.586 7.586"></path>
+              <circle cx="11" cy="11" r="2"></circle>
+            </svg>
+          </div>
+          <div>
+            <span class="font-serif text-2xl font-bold tracking-tight text-midnight dark:text-white">L'Esquisse</span>
+            <span class="hidden sm:block text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 -mt-1">Galerie & Atelier</span>
+          </div>
+        </a>
+
+        <!-- Liens de navigation (Desktop) -->
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-700 dark:text-slate-300">
+          <a href="#dessins-semaine" class="hover:text-terracotta transition-colors">Dessins de la semaine</a>
+          <a href="#catalogue" onclick="switchTab('artwork')" class="hover:text-terracotta transition-colors">Œuvres</a>
+          <a href="#catalogue" onclick="switchTab('course')" class="hover:text-terracotta transition-colors">Cours</a>
+          <a href="#artistes" class="hover:text-terracotta transition-colors">Artistes en vogue</a>
+        </nav>
+
+        <!-- Barre de recherche temps réel -->
+        <div class="hidden md:flex items-center flex-1 max-w-xs relative">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Rechercher une œuvre, un cours, un artiste..."
+            oninput="handleSearch(this.value)"
+            class="w-full pl-10 pr-4 py-2 text-sm rounded-full bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/20 transition-all"
+          />
+        </div>
+
+        <!-- Actions droites : Devise, Mode Sombre, Publier, Panier -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button
+            id="currencyToggle"
+            onclick="toggleCurrency()"
+            title="Changer la devise d'affichage"
+            class="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-midnight-card text-midnight dark:text-slate-200 hover:border-terracotta transition-colors"
+          >
+            FCFA
+          </button>
+
+          <button
+            onclick="toggleDarkMode()"
+            aria-label="Basculer le mode sombre"
+            class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-midnight-card text-slate-700 dark:text-slate-200 hover:border-terracotta transition-colors"
+          >
+            <svg id="sunIcon" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5"></circle>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+            </svg>
+            <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <button
+            onclick="openPublishModal()"
+            class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white text-sm font-medium shadow-sm hover:shadow transition-all active:scale-95"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span>Publier une annonce</span>
+          </button>
+
+          <button
+            onclick="toggleCartDrawer(true)"
+            aria-label="Ouvrir le panier"
+            class="relative p-2.5 rounded-xl bg-midnight dark:bg-slate-800 text-white hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span
+              id="cartCountBadge"
+              class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-terracotta text-white text-[11px] font-bold flex items-center justify-center shadow"
+            >
+              0
+            </span>
+          </button>
+
+          <button
+            onclick="toggleMobileMenu()"
+            class="lg:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+            aria-label="Menu mobile"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Menu Mobile Déroulant -->
+      <div id="mobileMenu" class="hidden lg:hidden pb-4 pt-2 border-t border-slate-200/70 dark:border-slate-800 space-y-3">
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Rechercher une œuvre, un cours..."
+            oninput="handleSearch(this.value)"
+            class="w-full pl-4 pr-4 py-2 text-sm rounded-xl bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700"
+          />
+        </div>
+        <div class="flex flex-col space-y-2 text-sm font-medium">
+          <a href="#dessins-semaine" onclick="toggleMobileMenu()" class="px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Dessins de la semaine</a>
+          <a href="#catalogue" onclick="switchTab('artwork'); toggleMobileMenu()" class="px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Explorer les Œuvres</a>
+          <a href="#catalogue" onclick="switchTab('course'); toggleMobileMenu()" class="px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Cours de Dessin</a>
+          <a href="#artistes" onclick="toggleMobileMenu()" class="px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Artistes en vogue</a>
+          <a href="#fonctionnement" onclick="toggleMobileMenu()" class="px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Devenir Vendeur</a>
+          <button onclick="openPublishModal(); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl bg-terracotta text-white font-medium">
+            + Publier une annonce
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION HÉRO (BANNIÈRE ÉDITORIALE)                                    -->
+  <!-- ===================================================================== -->
+  <section class="relative overflow-hidden paper-texture border-b border-slate-200/60 dark:border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+        <!-- Colonne Gauche : Éditorial & CTA -->
+        <div class="lg:col-span-6 space-y-6 animate-fade-up">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-terracotta-light dark:bg-terracotta/15 text-terracotta text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-terracotta animate-pulse"></span>
+            BEAUX-ARTS, MANGA, WEBTOON, COMICS & BD
+          </div>
+
+          <h1 class="font-serif text-4xl sm:text-5xl lg:text-[3.3rem] font-bold leading-[1.12] text-midnight dark:text-white">
+            L’art authentique et tous les univers du <span class="italic font-normal text-terracotta">dessin contemporain</span>.
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+            Acquérez des œuvres originales — de la peinture à l'huile au Manga, Webtoon, Comics et BD — ou apprenez directement auprès d'illustrateurs indépendants.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a
+              href="#dessins-semaine"
+              class="px-6 py-3.5 rounded-xl bg-midnight dark:bg-terracotta text-white font-medium text-sm sm:text-base shadow-lg hover:opacity-95 transition-all active:scale-95"
+            >
+              Dessins de la semaine
+            </a>
+            <a
+              href="#catalogue"
+              onclick="switchTab('course')"
+              class="px-6 py-3.5 rounded-xl bg-white dark:bg-midnight-card text-midnight dark:text-white border border-slate-300 dark:border-slate-700 hover:border-terracotta font-medium text-sm sm:text-base transition-all"
+            >
+              Découvrir les cours
+            </a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/80 dark:border-slate-800 max-w-md">
+            <div>
+              <p class="font-serif text-2xl font-bold text-midnight dark:text-white">10+</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Styles graphiques</p>
+            </div>
+            <div>
+              <p class="font-serif text-2xl font-bold text-midnight dark:text-white">+180</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Artistes vérifiés</p>
+            </div>
+            <div>
+              <p class="font-serif text-2xl font-bold text-midnight dark:text-white">4.9/5</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Satisfaction élèves</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne Droite : Mise en avant des deux œuvres de ArtyX (Jin Art) -->
+        <div class="lg:col-span-6 relative">
+          <div class="grid grid-cols-12 gap-4 items-center">
+            <div
+              onclick="openDetailModal(101)"
+              class="col-span-7 cursor-pointer group rounded-2xl p-3 bg-white dark:bg-midnight-card shadow-gallery hover:shadow-gallery-hover border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div class="aspect-[3/4] rounded-xl overflow-hidden relative bg-slate-900">
+                <img
+                  src="Sans titre 53.jpg"
+                  alt="Pluie d'Étoiles sur le Village Côtier par ArtyX (Jin Art)"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                />
+                <div class="hidden w-full h-full">
+                  <svg viewBox="0 0 400 500" class="w-full h-full object-cover">
+                    <defs>
+                      <linearGradient id="fallbackNight" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#020617"/>
+                        <stop offset="55%" stop-color="#1D4ED8"/>
+                        <stop offset="100%" stop-color="#93C5FD"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="400" height="500" fill="url(#fallbackNight)"/>
+                    <line x1="90" y1="110" x2="130" y2="85" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="290" y1="120" x2="330" y2="95" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+                    <polygon points="180,500 320,380 400,360 400,500" fill="#0F172A"/>
+                  </svg>
+                </div>
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-terracotta text-white text-[11px] font-semibold shadow">
+                  ★ Artiste à la Une
+                </span>
+              </div>
+              <div class="pt-3 px-1 flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <h3 class="font-serif font-semibold text-sm text-midnight dark:text-white truncate">Pluie d'Étoiles sur la Colline</h3>
+                  <p class="text-xs text-slate-500 truncate">ArtyX (Jin Art) • Illustration numérique</p>
+                </div>
+                <span class="text-xs font-bold text-terracotta shrink-0" data-price-eur="190">124 500 FCFA</span>
+              </div>
+            </div>
+
+            <div class="col-span-5 space-y-4">
+              <div
+                onclick="openDetailModal(102)"
+                class="cursor-pointer group rounded-2xl p-3 bg-white dark:bg-midnight-card shadow-gallery hover:shadow-gallery-hover border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div class="aspect-[3/4] rounded-xl overflow-hidden relative bg-white">
+                  <img
+                    src="Sans titre 56_20260829174335.jpg"
+                    alt="Gumball Version Anime / Manga par ArtyX (Jin Art)"
+                    class="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-500"
+                    onerror="this.src='https://placehold.co/300x400/ffffff/1E293B?text=ArtyX+Manga';"
+                  />
+                  <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-midnight text-white text-[10px] font-semibold">
+                    Manga / Character
+                  </span>
+                </div>
+                <div class="pt-2.5">
+                  <h4 class="font-serif font-semibold text-xs sm:text-sm text-midnight dark:text-white line-clamp-1">Gumball — Réinterprétation Anime</h4>
+                  <p class="text-[11px] text-slate-500 mt-0.5">ArtyX (Jin Art) • Manga</p>
+                </div>
+              </div>
+
+              <div class="rounded-2xl p-4 bg-midnight text-white shadow-gallery relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 w-20 h-20 rounded-full bg-terracotta/25 blur-xl"></div>
+                <p class="font-serif italic text-xs sm:text-sm leading-relaxed text-slate-200">
+                  « De la toile classique aux planches Manga et Webtoon, chaque style a son atelier. »
+                </p>
+                <p class="text-[10px] uppercase tracking-wider text-terracotta font-semibold mt-2.5">
+                  — Sélection L'Esquisse
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION : LES DESSINS DE LA SEMAINE                                   -->
+  <!-- ===================================================================== -->
+  <section id="dessins-semaine" class="py-16 bg-white/80 dark:bg-midnight-card/50 border-b border-slate-200/70 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">
+            <span>★ Sélection Hebdomadaire</span>
+          </div>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-midnight dark:text-white mt-1">
+            Les Dessins de la Semaine
+          </h2>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md">
+          Les œuvres les plus plébiscitées par la communauté et notre comité curatorial cette semaine.
+        </p>
+      </div>
+
+      <div id="weeklySpotlightGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- CATALOGUE INTERACTIF AVEC ONGLETS, FILTRES ÉLARGIS ET TRI             -->
+  <!-- ===================================================================== -->
+  <main id="catalogue" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div>
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">Collection & Transmission</span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-midnight dark:text-white mt-1">
+          Catalogue de la Marketplace
+        </h2>
+      </div>
+
+      <div class="inline-flex p-1.5 rounded-2xl bg-slate-200/70 dark:bg-midnight-card border border-slate-200 dark:border-slate-800 self-start overflow-x-auto max-w-full">
+        <button
+          id="tab-all"
+          onclick="switchTab('all')"
+          class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-white dark:bg-midnight text-midnight dark:text-white shadow-sm whitespace-nowrap"
+        >
+          Toutes les offres
+        </button>
+        <button
+          id="tab-artwork"
+          onclick="switchTab('artwork')"
+          class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-midnight dark:hover:text-white whitespace-nowrap"
+        >
+          Œuvres d'art
+        </button>
+        <button
+          id="tab-course"
+          onclick="switchTab('course')"
+          class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-midnight dark:hover:text-white whitespace-nowrap"
+        >
+          Cours de dessin
+        </button>
+      </div>
+    </div>
+
+    <!-- Barre de filtres par technique & Tri -->
+    <div class="flex flex-col gap-4 pb-8 mb-8 border-b border-slate-200/80 dark:border-slate-800">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <span class="text-xs font-semibold text-slate-500 mr-1 shrink-0">Styles :</span>
+        <button onclick="filterByTechnique('all')" data-tech="all" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-midnight text-white dark:bg-terracotta transition-all shrink-0">
+          Tous les styles
+        </button>
+        <button onclick="filterByTechnique('Manga')" data-tech="Manga" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Manga
+        </button>
+        <button onclick="filterByTechnique('Webtoon')" data-tech="Webtoon" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Webtoon
+        </button>
+        <button onclick="filterByTechnique('Comics')" data-tech="Comics" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Comics
+        </button>
+        <button onclick="filterByTechnique('BD')" data-tech="BD" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          BD (Bande Dessinée)
+        </button>
+        <button onclick="filterByTechnique('Chibi & Character Design')" data-tech="Chibi & Character Design" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Chibi & Character Design
+        </button>
+        <button onclick="filterByTechnique('Illustration numérique')" data-tech="Illustration numérique" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Illustration numérique
+        </button>
+        <button onclick="filterByTechnique(&quot;Peinture à l'huile&quot;)" data-tech="Peinture à l'huile" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Peinture à l'huile
+        </button>
+        <button onclick="filterByTechnique('Aquarelle')" data-tech="Aquarelle" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Aquarelle
+        </button>
+        <button onclick="filterByTechnique('Dessin au fusain')" data-tech="Dessin au fusain" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Dessin au fusain
+        </button>
+        <button onclick="filterByTechnique('Portrait')" data-tech="Portrait" class="tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0">
+          Portrait
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <div id="activeArtistFilterBadge" class="hidden items-center gap-2 px-3 py-1.5 rounded-full bg-terracotta/10 text-terracotta text-xs font-semibold">
+            <span id="activeArtistName">Artiste</span>
+            <button onclick="filterByArtist(null)" class="hover:text-midnight font-bold">✕</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 ml-auto">
+          <label for="sortSelect" class="text-xs text-slate-500 whitespace-nowrap">Trier par :</label>
+          <select
+            id="sortSelect"
+            onchange="handleSort(this.value)"
+            class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta"
+          >
+            <option value="featured">Coups de cœur</option>
+            <option value="price-asc">Prix croissant</option>
+            <option value="price-desc">Prix décroissant</option>
+            <option value="rating">Meilleures notes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-6">
+      <p id="resultsCount" class="text-sm text-slate-500 dark:text-slate-400">
+        Affichage des créations et formations
+      </p>
+      <button
+        id="resetFiltersBtn"
+        onclick="resetAllFilters()"
+        class="hidden text-xs font-medium text-terracotta hover:underline"
+      >
+        Réinitialiser les filtres
+      </button>
+    </div>
+
+    <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+    <div id="emptyState" class="hidden text-center py-16 px-4 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-800">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+      </div>
+      <h3 class="font-serif text-xl font-bold text-midnight dark:text-white">Aucune création trouvée</h3>
+      <p class="text-sm text-slate-500 max-w-md mx-auto mt-2">
+        Essayez de modifier vos filtres ou d'explorer une autre technique artistique.
+      </p>
+      <button onclick="resetAllFilters()" class="mt-5 px-5 py-2.5 rounded-xl bg-terracotta text-white text-sm font-medium">
+        Voir tout le catalogue
+      </button>
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION LES ARTISTES EN VOGUE                                         -->
+  <!-- ===================================================================== -->
+  <section id="artistes" class="py-16 bg-white/70 dark:bg-midnight-card/40 border-y border-slate-200/70 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">Créateurs Tendances</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-midnight dark:text-white mt-1">
+            Les Artistes en Vogue
+          </h2>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md">
+          Découvrez les créateurs les plus suivis du moment et filtrez directement leur boutique en un clic.
+        </p>
+      </div>
+
+      <div id="artistsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION COMMENT ÇA MARCHE                                             -->
+  <!-- ===================================================================== -->
+  <section id="fonctionnement" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">Simplicité & Transparence</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-midnight dark:text-white mt-2">
+        Comment fonctionne L'Esquisse ?
+      </h2>
+      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-3">
+        Un écosystème pensé pour rapprocher les passionnés d'art et les créateurs indépendants sans intermédiaires superflus.
+      </p>
+
+      <div class="inline-flex p-1.5 rounded-2xl bg-slate-200/70 dark:bg-midnight-card mt-6">
+        <button
+          id="howBuyerBtn"
+          onclick="switchHowTab('buyer')"
+          class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-midnight text-midnight dark:text-white shadow-sm transition-all"
+        >
+          Pour les Collectionneurs & Élèves
+        </button>
+        <button
+          id="howArtistBtn"
+          onclick="switchHowTab('artist')"
+          class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 transition-all"
+        >
+          Pour les Artistes Créateurs
+        </button>
+      </div>
+    </div>
+
+    <div id="howBuyerSteps" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-terracotta-light dark:bg-terracotta/20 text-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          01
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Explorez & Sélectionnez</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Parcourez la galerie par style (Manga, Webtoon, Comics, BD, huile, aquarelle) ou choisissez un atelier de dessin adapté à votre niveau.
+        </p>
+      </div>
+
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-terracotta-light dark:bg-terracotta/20 text-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          02
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Commandez en Sécurité</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Ajoutez vos coups de cœur à votre panier. Chaque œuvre originale est accompagnée d'un certificat d'authenticité signé par l'artiste.
+        </p>
+      </div>
+
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-terracotta-light dark:bg-terracotta/20 text-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          03
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Recevez ou Apprenez</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Recevez votre œuvre soigneusement emballée ou accédez immédiatement à vos séances de dessin en visio ou en atelier.
+        </p>
+      </div>
+    </div>
+
+    <div id="howArtistSteps" class="hidden grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-midnight text-white dark:bg-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          01
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Ouvrez votre Atelier</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Cliquez sur « Publier une annonce » pour importer vos créations originales ou structurer votre programme de cours de dessin.
+        </p>
+      </div>
+
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-midnight text-white dark:bg-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          02
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Fixez vos Tarifs Librement</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Vous restez maître de la valeur de votre travail et profitez d'une mise en avant dédiée auprès d'une audience passionnée.
+        </p>
+      </div>
+
+      <div class="p-7 rounded-3xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery">
+        <div class="w-12 h-12 rounded-2xl bg-midnight text-white dark:bg-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">
+          03
+        </div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white mb-2">Vendez & Transmettez</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Expédiez vos œuvres avec certificats ou animez vos sessions pédagogiques en toute sérénité.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-14 rounded-3xl bg-midnight dark:bg-midnight-card p-8 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+      <div class="absolute -right-10 -top-10 w-56 h-56 rounded-full bg-terracotta/20 blur-2xl pointer-events-none"></div>
+      <div class="space-y-2 max-w-xl relative z-10">
+        <h3 class="font-serif text-2xl sm:text-3xl font-bold">Vous êtes artiste peintre, dessinateur ou illustrateur ?</h3>
+        <p class="text-sm text-slate-300">
+          Publiez dès maintenant votre première œuvre ou proposez votre atelier d'initiation au dessin sur L'Esquisse.
+        </p>
+      </div>
+      <button
+        onclick="openPublishModal()"
+        class="relative z-10 shrink-0 px-6 py-3.5 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white font-semibold text-sm shadow-lg transition-all active:scale-95"
+      >
+        + Publier une œuvre ou un cours
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- PIED DE PAGE (FOOTER)                                                 -->
+  <!-- ===================================================================== -->
+  <footer class="bg-midnight-deep text-slate-400 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-800">
+        <div class="md:col-span-2 space-y-3">
+          <div class="flex items-center gap-2.5 text-white">
+            <span class="font-serif text-2xl font-bold">L'Esquisse</span>
+          </div>
+          <p class="text-sm max-w-md leading-relaxed">
+            La place de marché dédiée aux beaux-arts contemporains, au Manga, Webtoon, Comics, BD et à la transmission des techniques de dessin.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-3">Navigation</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#dessins-semaine" class="hover:text-terracotta transition-colors">Dessins de la semaine</a></li>
+            <li><a href="#catalogue" onclick="switchTab('artwork')" class="hover:text-terracotta transition-colors">Galerie d'œuvres</a></li>
+            <li><a href="#catalogue" onclick="switchTab('course')" class="hover:text-terracotta transition-colors">Cours de dessin</a></li>
+            <li><a href="#artistes" class="hover:text-terracotta transition-colors">Artistes en vogue</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-3">Garanties</h4>
+          <ul class="space-y-2 text-sm">
+            <li>Certificat d'authenticité inclus</li>
+            <li>Paiement séquestre sécurisé</li>
+            <li>Emballage spécial beaux-arts</li>
+            <li>Support dédié 7j/7</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-4">
+        <p>© 2026 L'Esquisse Marketplace. Tous droits réservés.</p>
+        <p>Conçu avec passion pour les artistes et amoureux du trait.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODALE 1 : DÉTAILS D'UNE ŒUVRE OU D'UN COURS                          -->
+  <!-- ===================================================================== -->
+  <div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+    <div class="bg-white dark:bg-midnight-card w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 animate-fade-up">
+      <div id="detailModalContent"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODALE 2 : PUBLIER UNE ŒUVRE OU UN COURS (ESPACE ARTISTE)             -->
+  <!-- ===================================================================== -->
+  <div id="publishModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+    <div class="bg-white dark:bg-midnight-card w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 animate-fade-up">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-terracotta">Espace Créateur</span>
+          <h3 class="font-serif text-2xl font-bold text-midnight dark:text-white">Publier une annonce</h3>
+        </div>
+        <button onclick="closePublishModal()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+          ✕
+        </button>
+      </div>
+
+      <form id="publishForm" onsubmit="handlePublishSubmit(event)" class="space-y-5 mt-6">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Type d'annonce</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer">
+              <input type="radio" name="itemType" value="artwork" checked onchange="togglePublishFields()" class="peer sr-only" />
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 peer-checked:border-terracotta peer-checked:bg-terracotta-light/60 dark:peer-checked:bg-terracotta/15 text-center transition-all">
+                <span class="block text-sm font-semibold text-midnight dark:text-white">Œuvre d'art originale</span>
+                <span class="text-[11px] text-slate-500">Tableau, manga, webtoon, illustration</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="itemType" value="course" onchange="togglePublishFields()" class="peer sr-only" />
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 peer-checked:border-terracotta peer-checked:bg-terracotta-light/60 dark:peer-checked:bg-terracotta/15 text-center transition-all">
+                <span class="block text-sm font-semibold text-midnight dark:text-white">Cours de dessin</span>
+                <span class="text-[11px] text-slate-500">Atelier live, présentiel ou vidéo</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Titre de l'œuvre ou du cours *</label>
+            <input type="text" id="pubTitle" required placeholder="Ex: Lumières d'Automne" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Nom de l'artiste *</label>
+            <input type="text" id="pubArtist" required placeholder="Ex: ArtyX (Jin Art)" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Style / Technique *</label>
+            <select id="pubTechnique" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta">
+              <option value="Manga">Manga</option>
+              <option value="Webtoon">Webtoon</option>
+              <option value="Comics">Comics</option>
+              <option value="BD">BD (Bande Dessinée)</option>
+              <option value="Chibi & Character Design">Chibi & Character Design</option>
+              <option value="Illustration numérique">Illustration numérique</option>
+              <option value="Peinture à l'huile">Peinture à l'huile</option>
+              <option value="Aquarelle">Aquarelle</option>
+              <option value="Dessin au fusain">Dessin au fusain</option>
+              <option value="Portrait">Portrait</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Prix (en EUR €) *</label>
+            <input type="number" id="pubPriceEur" required min="5" value="120" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta" />
+          </div>
+        </div>
+
+        <div id="artworkSpecificField">
+          <label class="block text-xs font-medium mb-1.5">Dimensions & Support</label>
+          <input type="text" id="pubDimensions" value="50 × 70 cm • Tirage Fine Art signé" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta" />
+        </div>
+
+        <div id="courseSpecificField" class="hidden grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Durée du programme</label>
+            <input type="text" id="pubDuration" value="4 semaines • 8h en direct" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1.5">Niveau requis</label>
+            <select id="pubLevel" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta">
+              <option value="Tous niveaux">Tous niveaux</option>
+              <option value="Débutant">Débutant</option>
+              <option value="Intermédiaire">Intermédiaire</option>
+              <option value="Avancé">Avancé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-medium">Visuel de l'œuvre ou du cours</label>
+            <span class="text-[11px] text-slate-400">Image locale ou thème prédéfini</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-cream/60 dark:bg-midnight/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div id="pubImagePreviewBox" class="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-800 overflow-hidden flex items-center justify-center text-slate-400 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p id="pubFileName" class="text-xs font-medium text-midnight dark:text-white truncate">Importer votre propre dessin (JPG, PNG, WebP)</p>
+                <p class="text-[11px] text-slate-500">Optionnel — sinon un visuel stylisé sera généré</p>
+              </div>
+            </div>
+            <label class="shrink-0 cursor-pointer px-3.5 py-2 rounded-xl bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta text-xs font-semibold text-midnight dark:text-white transition-colors">
+              Choisir un fichier
+              <input type="file" id="pubImageFile" accept="image/*" onchange="handleImageUpload(event)" class="hidden" />
+            </label>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <label class="cursor-pointer">
+              <input type="radio" name="artPreset" value="manga" checked class="peer sr-only" />
+              <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-terracotta bg-cream dark:bg-midnight text-center">
+                <div class="h-10 rounded-lg bg-gradient-to-br from-sky-400 via-indigo-600 to-slate-900 mb-1"></div>
+                <span class="text-[11px] font-medium">Manga / Anime</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="artPreset" value="comics" class="peer sr-only" />
+              <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-terracotta bg-cream dark:bg-midnight text-center">
+                <div class="h-10 rounded-lg bg-gradient-to-br from-rose-600 via-amber-500 to-slate-900 mb-1"></div>
+                <span class="text-[11px] font-medium">Comics / BD</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="artPreset" value="sunset" class="peer sr-only" />
+              <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-terracotta bg-cream dark:bg-midnight text-center">
+                <div class="h-10 rounded-lg bg-gradient-to-br from-amber-500 via-orange-600 to-slate-900 mb-1"></div>
+                <span class="text-[11px] font-medium">Paysage Chaud</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="artPreset" value="botanical" class="peer sr-only" />
+              <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-terracotta bg-cream dark:bg-midnight text-center">
+                <div class="h-10 rounded-lg bg-gradient-to-br from-emerald-700 via-teal-600 to-amber-100 mb-1"></div>
+                <span class="text-[11px] font-medium">Aquarelle</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium mb-1.5">Description détaillée *</label>
+          <textarea id="pubDescription" rows="3" required placeholder="Racontez l'histoire de cette œuvre, les matériaux utilisés ou le programme détaillé de votre cours..." class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-terracotta"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <button type="button" onclick="closePublishModal()" class="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            Annuler
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white text-sm font-semibold shadow">
+            Publier sur la marketplace
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- PANIER COULISSANT (CART DRAWER)                                       -->
+  <!-- ===================================================================== -->
+  <div id="cartDrawerOverlay" onclick="toggleCartDrawer(false)" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs transition-opacity"></div>
+  <aside
+    id="cartDrawer"
+    class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-white dark:bg-midnight-card shadow-2xl border-l border-slate-200 dark:border-slate-800 transform translate-x-full transition-transform duration-300 flex flex-col"
+  >
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div>
+        <h3 class="font-serif text-xl font-bold text-midnight dark:text-white">Votre Sélection</h3>
+        <p id="drawerSubtitle" class="text-xs text-slate-500">0 article dans votre panier</p>
+      </div>
+      <button onclick="toggleCartDrawer(false)" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+        ✕
+      </button>
+    </div>
+
+    <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+
+    <div id="cartFooter" class="p-6 border-t border-slate-200 dark:border-slate-800 bg-cream/60 dark:bg-midnight/60 space-y-4">
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+          <span>Sous-total</span>
+          <span id="cartSubtotal">0 FCFA</span>
+        </div>
+        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+          <span>Frais de protection & certificat (5%)</span>
+          <span id="cartFees">0 FCFA</span>
+        </div>
+        <div class="flex justify-between font-bold text-base text-midnight dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700">
+          <span>Total TTC</span>
+          <span id="cartTotal" class="text-terracotta">0 FCFA</span>
+        </div>
+      </div>
+
+      <button
+        id="checkoutBtn"
+        onclick="simulateCheckout()"
+        class="w-full py-3.5 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white font-semibold text-sm shadow-lg transition-all active:scale-95 disabled:opacity-50"
+      >
+        Finaliser la commande
+      </button>
+    </div>
+  </aside>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-3 px-5 py-3 rounded-2xl bg-midnight text-white text-sm font-medium shadow-2xl border border-slate-700 animate-fade-up">
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+    <span id="toastMessage">Action effectuée</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- LOGIQUE APPLICATIVE JAVASCRIPT                                        -->
+  <!-- ===================================================================== -->
+  <script>
+    const EUR_TO_FCFA = 656;
+
+    let state = {
+      currency: 'FCFA',
+      activeTab: 'all',
+      selectedTechnique: 'all',
+      selectedArtist: null,
+      searchQuery: '',
+      sortBy: 'featured',
+      cart: [],
+      uploadedImageDataUrl: null
+    };
+
+    const artists = [
+      {
+        id: 'artyx',
+        name: 'ArtyX (Jin Art)',
+        specialty: 'Manga, Anime & Paysages Nocturnes',
+        location: 'Cameroun • Créateur Vedette',
+        worksCount: 16,
+        studentsCount: 128,
+        rating: 5.0,
+        trendingTag: 'N°1 En Vogue',
+        initials: 'AX',
+        avatarImage: 'Sans titre 56_20260829174335.jpg',
+        color: 'bg-sky-600',
+        bio: 'Illustrateur numérique et créateur de personnages style Manga/Anime. Reconnu pour ses ciels étoilés atmosphériques et ses réinterprétations expressives.'
+      },
+      {
+        id: 'amelie',
+        name: 'Amélie Ndongo',
+        specialty: "Peinture à l'huile & Paysages",
+        location: 'Douala, Cameroun',
+        worksCount: 14,
+        studentsCount: 84,
+        rating: 4.9,
+        trendingTag: 'Tendance Galerie',
+        initials: 'AN',
+        color: 'bg-terracotta',
+        bio: 'Peintre autodidacte puis diplômée des Beaux-Arts, Amélie explore les lumières chaudes des fleuves d\'Afrique centrale au couteau et à l\'huile.'
+      },
+      {
+        id: 'sora',
+        name: 'Sora Takahashi',
+        specialty: 'Manga Shōnen & Encrage Plume G',
+        location: 'Osaka / Paris',
+        worksCount: 12,
+        studentsCount: 215,
+        rating: 4.9,
+        trendingTag: 'Top Cours Manga',
+        initials: 'ST',
+        color: 'bg-indigo-700',
+        bio: 'Mangaka indépendant ayant publié deux séries courtes. Sora enseigne la dynamique des cases, les trames numériques et le découpage narratif.'
+      },
+      {
+        id: 'hana',
+        name: 'Hana Kim',
+        specialty: 'Webtoon Romance & Colorisation',
+        location: 'Séoul / Montréal',
+        worksCount: 15,
+        studentsCount: 190,
+        rating: 5.0,
+        trendingTag: 'Star Webtoon',
+        initials: 'HK',
+        color: 'bg-rose-600',
+        bio: 'Créatrice de Webtoons à succès cumulant plus de 2 millions de lectures. Spécialiste du format vertical et des éclairages émotionnels.'
+      },
+      {
+        id: 'lucas',
+        name: 'Lucas Moreau',
+        specialty: 'Comics Super-Héros & BD Franco-Belge',
+        location: 'Bruxelles, Belgique',
+        worksCount: 11,
+        studentsCount: 96,
+        rating: 4.8,
+        trendingTag: 'Maître Encrage',
+        initials: 'LM',
+        color: 'bg-amber-600',
+        bio: 'Dessinateur de bande dessinée et encreur de comics, Lucas maîtrise aussi bien la ligne claire européenne que le clair-obscur dynamique américain.'
+      },
+      {
+        id: 'marc',
+        name: 'Marc-Antoine Lefèvre',
+        specialty: 'Portrait académique & Fusain',
+        location: 'Lyon, France',
+        worksCount: 9,
+        studentsCount: 142,
+        rating: 5.0,
+        trendingTag: 'Classique',
+        initials: 'ML',
+        color: 'bg-midnight',
+        bio: 'Portraitiste et enseignant depuis 12 ans, Marc-Antoine décompose l\'anatomie du visage et les valeurs d\'ombre pour rendre le dessin accessible à tous.'
+      }
+    ];
+
+    let catalogItems = [
+      {
+        id: 101,
+        type: 'artwork',
+        title: "Pluie d'Étoiles sur le Village Côtier",
+        artist: 'ArtyX (Jin Art)',
+        technique: 'Illustration numérique',
+        priceEur: 190,
+        rating: 5.0,
+        reviewsCount: 34,
+        dimensions: '60 × 85 cm • Tirage Fine Art & Fichier HD',
+        imageUrl: 'Sans titre 53.jpg',
+        imageFit: 'object-cover',
+        artStyle: 'sunset',
+        featured: true,
+        weeklyRank: 1,
+        weeklyBadge: 'N°1 Semaine • Coup de Cœur',
+        description: 'Création originale signée ArtyX (Jin Art). Un ciel nocturne d\'un bleu profond illuminé par une pluie d\'étoiles filantes et une voie lactée scintillante surplombant un village côtier accroché à la colline.',
+        certificate: 'Œuvre numérique originale certifiée par ArtyX (Jin Art), livrée en tirage d\'art haute définition signé.'
+      },
+      {
+        id: 102,
+        type: 'artwork',
+        title: 'Gumball — Réinterprétation Anime / Manga',
+        artist: 'ArtyX (Jin Art)',
+        technique: 'Manga',
+        priceEur: 140,
+        rating: 5.0,
+        reviewsCount: 29,
+        dimensions: '50 × 70 cm • Character Design Couleur',
+        imageUrl: 'Sans titre 56_20260829174335.jpg',
+        imageFit: 'object-contain bg-white',
+        artStyle: 'manga',
+        featured: true,
+        weeklyRank: 2,
+        weeklyBadge: 'N°2 Semaine • Tendance Manga',
+        description: 'Illustration fanart signée ArtyX - Jin Art réinventant l\'univers de Gumball dans un style anime/manga moderne : chevelure bleu électrique texturée, oreilles félines expressives et tenue urbaine au trait net.',
+        certificate: 'Illustration originale signée « ArtyX - Jin Art », disponible en impression d\'art premium sur papier mat 310g.'
+      },
+      {
+        id: 201,
+        type: 'artwork',
+        title: 'Éveil du Sabreur Céleste (Planche Encrée)',
+        artist: 'Sora Takahashi',
+        technique: 'Manga',
+        priceEur: 220,
+        rating: 4.9,
+        reviewsCount: 22,
+        dimensions: '36 × 51 cm • Encre de Chine & Trames',
+        artStyle: 'manga_panel',
+        featured: true,
+        weeklyRank: 3,
+        weeklyBadge: 'N°3 Semaine • Sélection Jury',
+        description: 'Planche originale de manga shōnen encrée à la plume G avec effets de vitesse dynamiques, contrastes noir et blanc tranchés et pose d\'action.',
+        certificate: 'Planche originale unique signée par Sora Takahashi au verso.'
+      },
+      {
+        id: 202,
+        type: 'artwork',
+        title: 'Minuit à Séoul — Épisode 14 (Illustration)',
+        artist: 'Hana Kim',
+        technique: 'Webtoon',
+        priceEur: 155,
+        rating: 5.0,
+        reviewsCount: 19,
+        dimensions: '45 × 80 cm • Tirage Vertical Collection',
+        artStyle: 'webtoon',
+        featured: true,
+        weeklyRank: 4,
+        weeklyBadge: 'N°4 Semaine • Favori Public',
+        description: 'Illustration grand format issue de l\'univers Webtoon romance-fantastique « Minuit à Séoul », jouant sur les néons pastel et les reflets de pluie.',
+        certificate: 'Édition limitée numérotée à 15 exemplaires signés par Hana Kim.'
+      },
+      {
+        id: 203,
+        type: 'course',
+        title: 'Créer son Premier Manga : Découpage & Plume',
+        artist: 'Sora Takahashi',
+        technique: 'Manga',
+        priceEur: 95,
+        rating: 4.9,
+        reviewsCount: 54,
+        duration: '6 semaines • 12h en direct',
+        level: 'Tous niveaux',
+        artStyle: 'manga_panel',
+        featured: true,
+        description: 'De la création du protagoniste au découpage des cases (nemus), maîtrisez les codes visuels du manga japonais, les lignes de mouvement et la pose des trames.',
+        syllabus: ['Semaine 1 : Proportions anime & expressions faciales', 'Semaine 2 : Dynamique du corps et raccourcis', 'Semaine 3-4 : Storyboard (Nemu) et rythme de lecture', 'Semaine 5-6 : Encrage et trames numériques']
+      },
+      {
+        id: 204,
+        type: 'course',
+        title: 'Lancer un Webtoon à Succès sur Mobile',
+        artist: 'Hana Kim',
+        technique: 'Webtoon',
+        priceEur: 105,
+        rating: 5.0,
+        reviewsCount: 47,
+        duration: '5 semaines • Atelier Clip Studio',
+        level: 'Débutant & Intermédiaire',
+        artStyle: 'webtoon',
+        featured: true,
+        description: 'Apprenez à composer pour le défilement vertical, gérer l\'espacement dramatique entre les cases et sublimer vos personnages grâce aux calques de lumière.',
+        syllabus: ['Module 1 : Format vertical et rythme de scroll', 'Module 2 : Workflow rapide d\'encrage et aplats', 'Module 3 : Ambiances lumineuses et effets spéciaux', 'Module 4 : Publication et fidélisation des lecteurs']
+      },
+      {
+        id: 205,
+        type: 'artwork',
+        title: 'Sentinelle de Néo-Gotham — Couverture Variante',
+        artist: 'Lucas Moreau',
+        technique: 'Comics',
+        priceEur: 275,
+        rating: 4.9,
+        reviewsCount: 16,
+        dimensions: '42 × 59 cm • Encre & Lavis Acrylique',
+        artStyle: 'comics',
+        featured: false,
+        description: 'Illustration façon couverture de comics américain : anatomie héroïque, ombres portées massives au pinceau et perspective en contre-plongée vertigineuse.',
+        certificate: 'Œuvre originale sur bristol 400g signée par Lucas Moreau.'
+      },
+      {
+        id: 206,
+        type: 'course',
+        title: 'Narration BD Franco-Belge & Encrage Comics',
+        artist: 'Lucas Moreau',
+        technique: 'BD',
+        priceEur: 90,
+        rating: 4.8,
+        reviewsCount: 28,
+        duration: '4 semaines • 8 ateliers live',
+        level: 'Tous niveaux',
+        artStyle: 'bd_franco',
+        featured: false,
+        description: 'Explorez l\'art séquentiel européen et américain : construction d\'une planche A3, lisibilité des bulles, décors architecturaux et encrage expressif.',
+        syllabus: ['Séance 1 : Grammaire de la case et cadrages', 'Séance 2 : Ligne claire vs clair-obscur comics', 'Séance 3 : Décors urbains et perspective', 'Séance 4 : Mise en couleur et lettrage']
+      },
+      {
+        id: 207,
+        type: 'artwork',
+        title: 'Escouade Chibi — Pack Mascottes & Stickers',
+        artist: 'ArtyX (Jin Art)',
+        technique: 'Chibi & Character Design',
+        priceEur: 85,
+        rating: 5.0,
+        reviewsCount: 31,
+        dimensions: '30 × 40 cm • Planche Personnages HD',
+        artStyle: 'chibi',
+        featured: false,
+        description: 'Série de personnages Chibi ultra-expressifs créés par ArtyX (Jin Art), mêlant proportions miniatures adorables et couleurs vibrantes.',
+        certificate: 'Tirage d\'art signé accompagné du pack d\'avatars haute résolution.'
+      },
+      {
+        id: 1,
+        type: 'artwork',
+        title: 'Crépuscule sur le Wouri',
+        artist: 'Amélie Ndongo',
+        technique: "Peinture à l'huile",
+        priceEur: 380,
+        rating: 4.9,
+        reviewsCount: 18,
+        dimensions: '80 × 100 cm • Huile sur toile de lin',
+        artStyle: 'wouri',
+        featured: false,
+        description: 'Une toile vibrante capturant les derniers rayons dorés du soleil se reflétant sur les eaux calmes du fleuve Wouri. Travail texturé au couteau avec glacis ambrés.',
+        certificate: 'Œuvre unique livrée avec certificat d\'authenticité signé et encadrement caisse américaine en chêne.'
+      },
+      {
+        id: 2,
+        type: 'course',
+        title: 'Maîtriser le Portrait au Fusain',
+        artist: 'Marc-Antoine Lefèvre',
+        technique: 'Dessin au fusain',
+        priceEur: 95,
+        rating: 5.0,
+        reviewsCount: 42,
+        duration: '6 semaines • 12h en direct',
+        level: 'Débutant & Intermédiaire',
+        artStyle: 'charcoal',
+        featured: false,
+        description: 'Apprenez à construire un visage juste, à placer les proportions selon la méthode Loomis et à sculpter la lumière avec le fusain naturel.',
+        syllabus: ['Semaine 1 : Structure crânienne et proportions', 'Semaine 2 : Étude des yeux, du nez et de la bouche', 'Semaine 3-4 : Valeurs d\'ombre et clair-obscur', 'Semaine 5-6 : Portrait complet d\'après modèle']
+      },
+      {
+        id: 5,
+        type: 'artwork',
+        title: 'Regard Silencieux IV',
+        artist: 'Marc-Antoine Lefèvre',
+        technique: 'Portrait',
+        priceEur: 240,
+        rating: 5.0,
+        reviewsCount: 9,
+        dimensions: '50 × 65 cm • Fusain et pierre noire',
+        artStyle: 'portrait',
+        featured: false,
+        description: 'Étude expressive d\'un regard tourné vers la lumière latérale. Le contraste profond entre la pierre noire veloutée et le grain du papier coton crée une présence saisissante.',
+        certificate: 'Dessin original fixé, signé et accompagné d\'un certificat d\'authenticité.'
+      }
+    ];
+
+    function getItemVisual(item, suffix = '') {
+      if (item.imageUrl) {
+        const fitClass = item.imageFit || 'object-cover';
+        return `
+          <img
+            src="${item.imageUrl}"
+            alt="${item.title} par ${item.artist}"
+            class="w-full h-full ${fitClass}"
+            onerror="this.onerror=null; this.src='https://placehold.co/600x450/1E293B/FAF9F6?text=${encodeURIComponent(item.title)}';"
+          />
+        `;
+      }
+      return getArtworkSVG(item.artStyle, `${item.id}_${suffix}`);
+    }
+
+    function getArtworkSVG(style, id) {
+      const uid = `svg_${id}_${style}`;
+      switch (style) {
+        case 'manga':
+        case 'manga_panel':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <rect width="400" height="300" fill="#F8FAFC"/>
+              <polygon points="15,15 245,15 215,175 15,155" fill="#0F172A"/>
+              <polygon points="255,15 385,15 385,185 225,175" fill="#38BDF8"/>
+              <polygon points="15,165 385,195 385,285 15,285" fill="#E2E8F0" stroke="#0F172A" stroke-width="4"/>
+              <line x1="20" y1="25" x2="120" y2="95" stroke="#38BDF8" stroke-width="3"/>
+              <line x1="20" y1="65" x2="110" y2="110" stroke="#FFF" stroke-width="2"/>
+              <circle cx="145" cy="95" r="42" fill="#FFF"/>
+              <ellipse cx="132" cy="92" rx="8" ry="12" fill="#0F172A"/>
+              <circle cx="130" cy="88" r="3" fill="#FFF"/>
+              <ellipse cx="160" cy="92" rx="8" ry="12" fill="#0F172A"/>
+              <circle cx="158" cy="88" r="3" fill="#FFF"/>
+              <line x1="240" y1="160" x2="370" y2="30" stroke="#FFF" stroke-width="6" stroke-linecap="round"/>
+              <text x="45" y="252" font-family="sans-serif" font-weight="900" font-size="34" fill="#0F172A" letter-spacing="3">ゴゴゴゴ</text>
+            </svg>`;
+
+        case 'webtoon':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <defs>
+                <linearGradient id="${uid}_wt" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#311042"/>
+                  <stop offset="50%" stop-color="#BE185D"/>
+                  <stop offset="100%" stop-color="#F472B6"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="300" fill="url(#${uid}_wt)"/>
+              <circle cx="200" cy="140" r="88" fill="#FBCFE8" opacity="0.28"/>
+              <circle cx="200" cy="140" r="56" fill="#FDF2F8" opacity="0.85"/>
+              <ellipse cx="95" cy="75" rx="9" ry="5" transform="rotate(25 95 75)" fill="#FBCFE8"/>
+              <ellipse cx="310" cy="95" rx="10" ry="5" transform="rotate(-30 310 95)" fill="#FBCFE8"/>
+              <ellipse cx="285" cy="215" rx="8" ry="4" transform="rotate(15 285 215)" fill="#FDE047"/>
+              <ellipse cx="115" cy="220" rx="9" ry="5" transform="rotate(-20 115 220)" fill="#FBCFE8"/>
+              <rect x="135" y="20" width="130" height="260" rx="16" fill="none" stroke="#FFF" stroke-width="2.5" opacity="0.8"/>
+              <path d="M165 200 Q200 155 235 200" fill="none" stroke="#831843" stroke-width="4" stroke-linecap="round"/>
+            </svg>`;
+
+        case 'comics':
+        case 'bd_franco':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <rect width="400" height="300" fill="#FACC15"/>
+              <circle cx="200" cy="150" r="120" fill="#DC2626"/>
+              <polygon points="200,25 235,105 325,95 255,155 295,240 200,195 105,240 145,155 75,95 165,105" fill="#FEF08A" stroke="#0F172A" stroke-width="4"/>
+              <rect x="115" y="110" width="170" height="68" rx="20" fill="#FFF" stroke="#0F172A" stroke-width="4"/>
+              <polygon points="175,178 160,205 205,178" fill="#FFF" stroke="#0F172A" stroke-width="4"/>
+              <text x="200" y="152" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="24" fill="#0F172A">POW! BAM!</text>
+            </svg>`;
+
+        case 'chibi':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <rect width="400" height="300" fill="#FEF3C7"/>
+              <circle cx="200" cy="150" r="105" fill="#FDE68A"/>
+              <circle cx="200" cy="145" r="68" fill="#FFF" stroke="#1E293B" stroke-width="4"/>
+              <polygon points="142,102 152,55 182,85" fill="#38BDF8" stroke="#1E293B" stroke-width="4"/>
+              <polygon points="258,102 248,55 218,85" fill="#38BDF8" stroke="#1E293B" stroke-width="4"/>
+              <circle cx="174" cy="145" r="14" fill="#1E293B"/>
+              <circle cx="170" cy="140" r="5" fill="#FFF"/>
+              <circle cx="226" cy="145" r="14" fill="#1E293B"/>
+              <circle cx="222" cy="140" r="5" fill="#FFF"/>
+              <ellipse cx="155" cy="162" rx="10" ry="5" fill="#FB7185" opacity="0.6"/>
+              <ellipse cx="245" cy="162" rx="10" ry="5" fill="#FB7185" opacity="0.6"/>
+              <path d="M190 165 Q200 176 210 165" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>`;
+
+        case 'wouri':
+        case 'sunset':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <defs>
+                <linearGradient id="${uid}_sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1E293B"/>
+                  <stop offset="50%" stop-color="#C2410C"/>
+                  <stop offset="100%" stop-color="#FBBF24"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="200" fill="url(#${uid}_sky)"/>
+              <circle cx="260" cy="145" r="38" fill="#FEF3C7" opacity="0.92"/>
+              <path d="M0 175 Q110 145 210 172 T400 160 L400 200 L0 200 Z" fill="#0F172A" opacity="0.8"/>
+              <rect y="200" width="400" height="100" fill="#9A3412"/>
+              <ellipse cx="260" cy="225" rx="35" ry="4" fill="#FDE68A" opacity="0.7"/>
+              <ellipse cx="255" cy="248" rx="50" ry="3" fill="#FDE68A" opacity="0.45"/>
+              <path d="M80 232 Q125 245 170 230 L158 238 Q125 248 92 238 Z" fill="#0F172A"/>
+            </svg>`;
+
+        case 'charcoal':
+        case 'portrait':
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <rect width="400" height="300" fill="#F4F1EA"/>
+              <circle cx="200" cy="145" r="95" fill="#E7E2D8"/>
+              <line x1="200" y1="30" x2="200" y2="270" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5 5"/>
+              <line x1="90" y1="140" x2="310" y2="140" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5 5"/>
+              <path d="M145 110 C145 65, 255 65, 255 110 C255 175, 225 220, 200 225 C175 220, 145 175, 145 110 Z" fill="none" stroke="#1E293B" stroke-width="3"/>
+              <path d="M200 72 C238 72, 253 95, 253 115 C253 172, 224 218, 200 223 Z" fill="#1E293B" opacity="0.16"/>
+              <path d="M165 132 Q178 124 190 132" fill="none" stroke="#1E293B" stroke-width="2.5"/>
+              <path d="M210 132 Q222 124 235 132" fill="none" stroke="#1E293B" stroke-width="2.5"/>
+              <path d="M200 135 L194 168 L205 170" fill="none" stroke="#1E293B" stroke-width="2"/>
+              <path d="M182 190 Q200 198 218 190" fill="none" stroke="#D95D39" stroke-width="2.5"/>
+            </svg>`;
+
+        default:
+          return `
+            <svg viewBox="0 0 400 300" class="w-full h-full object-cover">
+              <rect width="400" height="300" fill="#FAF6EE"/>
+              <circle cx="215" cy="145" r="85" fill="#D1FAE5" opacity="0.65"/>
+              <circle cx="170" cy="175" r="60" fill="#FDE68A" opacity="0.5"/>
+              <path d="M130 270 Q185 180 265 65" fill="none" stroke="#065F46" stroke-width="3" stroke-linecap="round"/>
+              <path d="M175 200 C135 185, 130 155, 172 165 C185 175, 182 192, 175 200 Z" fill="#059669" opacity="0.75"/>
+              <path d="M205 155 C245 145, 255 115, 212 125 C198 132, 200 148, 205 155 Z" fill="#047857" opacity="0.8"/>
+              <circle cx="265" cy="65" r="18" fill="#D95D39" opacity="0.85"/>
+            </svg>`;
+      }
+    }
+
+    function renderWeeklySpotlight() {
+      const grid = document.getElementById('weeklySpotlightGrid');
+      const weeklyItems = catalogItems
+        .filter(item => item.weeklyRank)
+        .sort((a, b) => a.weeklyRank - b.weeklyRank);
+
+      grid.innerHTML = weeklyItems.map(item => `
+        <article class="group rounded-3xl bg-cream dark:bg-midnight border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-gallery hover:shadow-gallery-hover transition-all duration-300 hover:-translate-y-1.5 flex flex-col">
+          <div onclick="openDetailModal(${item.id})" class="relative aspect-[4/4] overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-900">
+            <div class="w-full h-full group-hover:scale-105 transition-transform duration-500">
+              ${getItemVisual(item, 'weekly')}
+            </div>
+            <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-terracotta text-white text-[11px] font-bold shadow-md">
+              ${item.weeklyBadge}
+            </span>
+            <span class="absolute bottom-3 right-3 px-2.5 py-1 rounded-lg bg-slate-950/75 text-white text-[11px] font-medium backdrop-blur-xs">
+              ${item.technique}
+            </span>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span class="font-semibold text-terracotta">${item.artist}</span>
+                <span class="font-bold text-amber-500">★ ${item.rating.toFixed(1)}</span>
+              </div>
+              <h3 onclick="openDetailModal(${item.id})" class="font-serif text-lg font-bold text-midnight dark:text-white group-hover:text-terracotta transition-colors cursor-pointer line-clamp-1">
+                ${item.title}
+              </h3>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200/70 dark:border-slate-800 flex items-center justify-between">
+              <span class="font-bold text-base text-midnight dark:text-white">${formatPrice(item.priceEur)}</span>
+              <button
+                onclick="addToCart(${item.id})"
+                class="px-3.5 py-2 rounded-xl bg-midnight dark:bg-terracotta text-white text-xs font-semibold hover:opacity-90 transition-all active:scale-95"
+              >
+                + Panier
+              </button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function formatPrice(priceEur) {
+      if (state.currency === 'FCFA') {
+        const fcfa = Math.round((priceEur * EUR_TO_FCFA) / 500) * 500;
+        return fcfa.toLocaleString('fr-FR') + ' FCFA';
+      }
+      return priceEur.toLocaleString('fr-FR') + ' €';
+    }
+
+    function toggleCurrency() {
+      state.currency = state.currency === 'FCFA' ? 'EUR' : 'FCFA';
+      document.getElementById('currencyToggle').textContent = state.currency;
+
+      document.querySelectorAll('[data-price-eur]').forEach(el => {
+        const eur = parseFloat(el.getAttribute('data-price-eur'));
+        el.textContent = formatPrice(eur);
+      });
+
+      renderWeeklySpotlight();
+      renderCatalog();
+      renderCart();
+      showToast(`Devise basculée en ${state.currency}`);
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-midnight dark:hover:text-white whitespace-nowrap';
+      });
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeBtn) {
+        activeBtn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-white dark:bg-midnight text-midnight dark:text-white shadow-sm whitespace-nowrap';
+      }
+      renderCatalog();
+    }
+
+    function filterByTechnique(tech) {
+      state.selectedTechnique = tech;
+      document.querySelectorAll('.tech-pill').forEach(pill => {
+        const isSelected = pill.getAttribute('data-tech') === tech;
+        pill.className = isSelected
+          ? 'tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-midnight text-white dark:bg-terracotta transition-all shrink-0'
+          : 'tech-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-midnight-card border border-slate-200 dark:border-slate-700 hover:border-terracotta transition-all shrink-0';
+      });
+      renderCatalog();
+    }
+
+    function filterByArtist(artistName) {
+      state.selectedArtist = artistName;
+      const badge = document.getElementById('activeArtistFilterBadge');
+      const nameSpan = document.getElementById('activeArtistName');
+      if (artistName) {
+        nameSpan.textContent = `Artiste : ${artistName}`;
+        badge.classList.remove('hidden');
+        badge.classList.add('inline-flex');
+        const catalogueEl = document.getElementById('catalogue');
+        if (catalogueEl) catalogueEl.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        badge.classList.add('hidden');
+        badge.classList.remove('inline-flex');
+      }
+      renderCatalog();
+    }
+
+    function handleSearch(query) {
+      state.searchQuery = query;
+      renderCatalog();
+    }
+
+    function handleSort(sortValue) {
+      state.sortBy = sortValue;
+      renderCatalog();
+    }
+
+    function resetAllFilters() {
+      state.activeTab = 'all';
+      state.selectedTechnique = 'all';
+      state.selectedArtist = null;
+      state.searchQuery = '';
+      state.sortBy = 'featured';
+
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      const sortSelect = document.getElementById('sortSelect');
+      if (sortSelect) sortSelect.value = 'featured';
+
+      switchTab('all');
+      filterByTechnique('all');
+      filterByArtist(null);
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('catalogGrid');
+      const emptyState = document.getElementById('emptyState');
+      const resultsCount = document.getElementById('resultsCount');
+      const resetBtn = document.getElementById('resetFiltersBtn');
+
+      let filtered = catalogItems.filter(item => {
+        const matchTab = state.activeTab === 'all' || item.type === state.activeTab;
+        const matchTech = state.selectedTechnique === 'all' || item.technique === state.selectedTechnique;
+        const matchArtist = !state.selectedArtist || item.artist === state.selectedArtist;
+        const q = state.searchQuery.toLowerCase().trim();
+        const matchQuery = !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.artist.toLowerCase().includes(q) ||
+          item.technique.toLowerCase().includes(q);
+
+        return matchTab && matchTech && matchArtist && matchQuery;
+      });
+
+      if (state.sortBy === 'price-asc') {
+        filtered.sort((a, b) => a.priceEur - b.priceEur);
+      } else if (state.sortBy === 'price-desc') {
+        filtered.sort((a, b) => b.priceEur - a.priceEur);
+      } else if (state.sortBy === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+
+      const hasActiveFilter = state.activeTab !== 'all' || state.selectedTechnique !== 'all' || state.selectedArtist || state.searchQuery;
+      resetBtn.classList.toggle('hidden', !hasActiveFilter);
+
+      resultsCount.textContent = `${filtered.length} ${filtered.length > 1 ? 'résultats disponibles' : 'résultat disponible'}`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(item => {
+        const isCourse = item.type === 'course';
+        const badgeLabel = isCourse ? 'Cours de dessin' : 'Œuvre originale';
+        const badgeClass = isCourse
+          ? 'bg-midnight text-white dark:bg-slate-800'
+          : 'bg-white/95 text-midnight shadow-xs';
+        const metaInfo = isCourse
+          ? `${item.duration} • ${item.level}`
+          : item.dimensions;
+
+        const initials = item.artist.split(' ').map(n => n[0]).join('').slice(0, 2);
+
+        return `
+          <article class="group rounded-2xl bg-white dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-gallery hover:shadow-gallery-hover transition-all duration-300 hover:-translate-y-1 flex flex-col">
+            <div onclick="openDetailModal(${item.id})" class="relative aspect-[4/3] overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-900">
+              <div class="w-full h-full group-hover:scale-105 transition-transform duration-500">
+                ${getItemVisual(item, 'grid')}
+              </div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">
+                ${badgeLabel}
+              </span>
+              <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded-lg bg-slate-950/70 text-white text-[11px] font-medium backdrop-blur-xs">
+                ${item.technique}
+              </span>
+            </div>
+
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+              <div>
+                <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 mb-1.5">
+                  <div class="flex items-center gap-2 truncate">
+                    <span class="w-6 h-6 rounded-full bg-terracotta/15 text-terracotta font-bold text-[10px] flex items-center justify-center shrink-0">
+                      ${initials}
+                    </span>
+                    <span class="truncate font-medium text-slate-700 dark:text-slate-300">${item.artist}</span>
+                  </div>
+                  <span class="flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400 shrink-0">
+                    ★ ${item.rating.toFixed(1)}
+                  </span>
+                </div>
+
+                <h3 onclick="openDetailModal(${item.id})" class="font-serif text-lg font-bold text-midnight dark:text-white group-hover:text-terracotta transition-colors cursor-pointer line-clamp-1">
+                  ${item.title}
+                </h3>
+
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+                  ${metaInfo}
+                </p>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                <div>
+                  <span class="block text-[10px] uppercase tracking-wider text-slate-400">
+                    ${isCourse ? 'Inscription' : 'Prix galerie'}
+                  </span>
+                  <span class="font-bold text-base text-midnight dark:text-white">
+                    ${formatPrice(item.priceEur)}
+                  </span>
+                </div>
+
+                <button
+                  onclick="addToCart(${item.id})"
+                  class="px-3.5 py-2 rounded-xl bg-cream dark:bg-slate-800 hover:bg-terracotta hover:text-white dark:hover:bg-terracotta text-midnight dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-terracotta text-xs font-semibold transition-all active:scale-95"
+                >
+                  ${isCourse ? 'Réserver' : '+ Panier'}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderArtists() {
+      const grid = document.getElementById('artistsGrid');
+      grid.innerHTML = artists.map(artist => {
+        const avatarContent = artist.avatarImage
+          ? `<img src="${artist.avatarImage}" alt="${artist.name}" class="w-full h-full object-cover" onerror="this.style.display='none';" />`
+          : artist.initials;
+
+        return `
+        <div class="p-6 rounded-3xl bg-cream dark:bg-midnight-card border border-slate-200/80 dark:border-slate-800 shadow-gallery hover:shadow-gallery-hover transition-all flex flex-col justify-between space-y-5">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-4">
+              <div class="flex items-center gap-3.5">
+                <div class="w-14 h-14 rounded-2xl ${artist.color} text-white font-serif font-bold text-lg flex items-center justify-center shadow-sm shrink-0 overflow-hidden border-2 border-white dark:border-slate-700">
+                  ${avatarContent}
+                </div>
+                <div>
+                  <h3 class="font-serif font-bold text-base text-midnight dark:text-white">${artist.name}</h3>
+                  <p class="text-xs text-slate-500">${artist.location}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-terracotta/10 text-terracotta text-[10px] font-bold shrink-0">
+                ${artist.trendingTag}
+              </span>
+            </div>
+
+            <span class="inline-block px-2.5 py-1 rounded-lg bg-white dark:bg-midnight text-midnight dark:text-slate-200 text-[11px] font-semibold border border-slate-200/70 dark:border-slate-700 mb-3">
+              ${artist.specialty}
+            </span>
+
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              ${artist.bio}
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="text-xs text-slate-500">
+              <strong class="text-midnight dark:text-white">${artist.worksCount}</strong> œuvres •
+              <strong class="text-amber-500">★ ${artist.rating.toFixed(1)}</strong>
+            </div>
+            <button
+              onclick="filterByArtist(this.getAttribute('data-artist'))"
+              data-artist="${artist.name}"
+              class="px-3.5 py-1.5 rounded-xl bg-white dark:bg-midnight border border-slate-200 dark:border-slate-700 hover:border-terracotta text-xs font-semibold text-terracotta transition-colors"
+            >
+              Voir la boutique →
+            </button>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    function openDetailModal(itemId) {
+      const item = catalogItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const isCourse = item.type === 'course';
+      const artistObj = artists.find(a => a.name === item.artist);
+      const artistBio = artistObj
+        ? artistObj.bio
+        : 'Artiste indépendant sélectionné par le comité curatorial de L\'Esquisse pour la maîtrise de son geste et l\'originalité de sa démarche.';
+
+      const extraSection = isCourse
+        ? `
+          <div class="p-4 rounded-2xl bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-800 space-y-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-midnight dark:text-white">Programme pédagogique</h4>
+            <ul class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+              ${(item.syllabus || ['Introduction aux outils et supports', 'Exercices pratiques guidés pas à pas', 'Correction personnalisée de vos travaux']).map(step => `<li class="flex items-start gap-2"><span class="text-terracotta font-bold">✓</span><span>${step}</span></li>`).join('')}
+            </ul>
+          </div>`
+        : `
+          <div class="p-4 rounded-2xl bg-cream dark:bg-midnight border border-slate-200 dark:border-slate-800 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold">
+              ✓
+            </div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-midnight dark:text-white">Authenticité & Expédition</h4>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">${item.certificate || 'Livré avec certificat d\'authenticité signé par l\'artiste.'}</p>
+            </div>
+          </div>`;
+
+      document.getElementById('detailModalContent').innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-12">
+          <div class="md:col-span-6 bg-slate-100 dark:bg-slate-900 relative min-h-[300px] md:min-h-[480px] flex items-center justify-center overflow-hidden">
+            ${getItemVisual(item, 'modal')}
+            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 text-midnight text-xs font-semibold shadow">
+              ${isCourse ? 'Cours de dessin' : 'Œuvre originale'}
+            </span>
+          </div>
+
+          <div class="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-semibold text-terracotta uppercase tracking-wider">${item.technique}</span>
+                <button onclick="closeDetailModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400">✕</button>
+              </div>
+
+              <h2 class="font-serif text-2xl sm:text-3xl font-bold text-midnight dark:text-white">${item.title}</h2>
+
+              <div class="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                <span>Par <strong class="text-midnight dark:text-slate-200">${item.artist}</strong></span>
+                <span>•</span>
+                <span class="text-amber-600 font-semibold">★ ${item.rating.toFixed(1)} (${item.reviewsCount} avis)</span>
+              </div>
+
+              <div class="mt-4 inline-block px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300">
+                ${isCourse ? `${item.duration} • Niveau : ${item.level}` : item.dimensions}
+              </div>
+
+              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-4">
+                ${item.description}
+              </p>
+
+              <div class="mt-5">
+                ${extraSection}
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <p class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">À propos de l'artiste</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">${artistBio}</p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+              <div>
+                <span class="block text-xs text-slate-400">Tarif total</span>
+                <span class="font-serif text-2xl font-bold text-midnight dark:text-white">${formatPrice(item.priceEur)}</span>
+              </div>
+              <button
+                onclick="addToCart(${item.id}); closeDetailModal(); toggleCartDrawer(true);"
+                class="px-6 py-3.5 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white text-sm font-semibold shadow-lg transition-all active:scale-95"
+              >
+                ${isCourse ? 'Réserver ce cours' : 'Ajouter au panier'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const modal = document.getElementById('detailModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function addToCart(itemId) {
+      const item = catalogItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const existing = state.cart.find(c => c.id === itemId);
+      if (existing) {
+        if (item.type === 'artwork') {
+          showToast('Cette œuvre unique est déjà dans votre panier');
+          return;
+        }
+        existing.qty += 1;
+      } else {
+        state.cart.push({ ...item, qty: 1 });
+      }
+
+      renderCart();
+      showToast(`« ${item.title} » ajouté à votre sélection`);
+    }
+
+    function removeFromCart(itemId) {
+      state.cart = state.cart.filter(c => c.id !== itemId);
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const badge = document.getElementById('cartCountBadge');
+      const subtitle = document.getElementById('drawerSubtitle');
+      const subtotalEl = document.getElementById('cartSubtotal');
+      const feesEl = document.getElementById('cartFees');
+      const totalEl = document.getElementById('cartTotal');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      const totalCount = state.cart.reduce((acc, item) => acc + item.qty, 0);
+      badge.textContent = totalCount;
+      subtitle.textContent = `${totalCount} ${totalCount > 1 ? 'articles sélectionnés' : 'article sélectionné'}`;
+
+      if (state.cart.length === 0) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-12">
+            <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+            </div>
+            <p class="font-serif text-lg font-bold text-midnight dark:text-white">Votre panier est vide</p>
+            <p class="text-xs text-slate-500 max-w-xs mt-1">Explorez la galerie pour acquérir une œuvre originale ou réserver un atelier de dessin.</p>
+          </div>
+        `;
+        subtotalEl.textContent = formatPrice(0);
+        feesEl.textContent = formatPrice(0);
+        totalEl.textContent = formatPrice(0);
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      checkoutBtn.disabled = false;
+      let subtotalEur = 0;
+
+      container.innerHTML = state.cart.map(item => {
+        subtotalEur += item.priceEur * item.qty;
+        return `
+          <div class="flex gap-3.5 p-3.5 rounded-2xl bg-cream dark:bg-midnight border border-slate-200/70 dark:border-slate-800">
+            <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200">
+              ${getItemVisual(item, 'cart')}
+            </div>
+            <div class="flex-1 min-w-0">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-terracotta">
+                ${item.type === 'course' ? 'Cours' : 'Œuvre'}
+              </span>
+              <h4 class="font-serif font-bold text-sm text-midnight dark:text-white truncate">${item.title}</h4>
+              <p class="text-xs text-slate-500 truncate">${item.artist}</p>
+              <div class="flex items-center justify-between mt-2">
+                <span class="text-xs font-bold text-midnight dark:text-white">${formatPrice(item.priceEur * item.qty)}</span>
+                <button onclick="removeFromCart(${item.id})" class="text-[11px] text-rose-600 hover:underline">
+                  Retirer
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const feesEur = Math.round(subtotalEur * 0.05);
+      const totalEur = subtotalEur + feesEur;
+
+      subtotalEl.textContent = formatPrice(subtotalEur);
+      feesEl.textContent = formatPrice(feesEur);
+      totalEl.textContent = formatPrice(totalEur);
+    }
+
+    function toggleCartDrawer(open) {
+      const overlay = document.getElementById('cartDrawerOverlay');
+      const drawer = document.getElementById('cartDrawer');
+      if (open) {
+        overlay.classList.remove('hidden');
+        drawer.classList.remove('translate-x-full');
+      } else {
+        overlay.classList.add('hidden');
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function simulateCheckout() {
+      if (state.cart.length === 0) return;
+
+      const container = document.getElementById('cartItemsContainer');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      checkoutBtn.disabled = true;
+
+      container.innerHTML = `
+        <div class="h-full flex flex-col items-center justify-center text-center py-10 px-4 animate-fade-up">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl font-bold mb-4">
+            ✓
+          </div>
+          <h4 class="font-serif text-2xl font-bold text-midnight dark:text-white">Commande confirmée !</h4>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+            Merci pour votre soutien aux artistes indépendants. Vos certificats d'authenticité et liens d'accès aux ateliers viennent d'être préparés.
+          </p>
+          <button
+            onclick="state.cart = []; renderCart(); toggleCartDrawer(false);"
+            class="mt-6 px-6 py-2.5 rounded-xl bg-midnight dark:bg-terracotta text-white text-xs font-semibold"
+          >
+            Continuer la visite
+          </button>
+        </div>
+      `;
+    }
+
+    function openPublishModal() {
+      const modal = document.getElementById('publishModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closePublishModal() {
+      const modal = document.getElementById('publishModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        state.uploadedImageDataUrl = e.target.result;
+        document.getElementById('pubFileName').textContent = file.name;
+        document.getElementById('pubImagePreviewBox').innerHTML = `
+          <img src="${state.uploadedImageDataUrl}" alt="Aperçu" class="w-full h-full object-cover" />
+        `;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function togglePublishFields() {
+      const type = document.querySelector('input[name="itemType"]:checked').value;
+      const artField = document.getElementById('artworkSpecificField');
+      const courseField = document.getElementById('courseSpecificField');
+
+      if (type === 'course') {
+        artField.classList.add('hidden');
+        courseField.classList.remove('hidden');
+        courseField.classList.add('grid');
+      } else {
+        artField.classList.remove('hidden');
+        courseField.classList.add('hidden');
+        courseField.classList.remove('grid');
+      }
+    }
+
+    function handlePublishSubmit(event) {
+      event.preventDefault();
+
+      const type = document.querySelector('input[name="itemType"]:checked').value;
+      const title = document.getElementById('pubTitle').value.trim();
+      const artist = document.getElementById('pubArtist').value.trim();
+      const technique = document.getElementById('pubTechnique').value;
+      const priceEur = parseFloat(document.getElementById('pubPriceEur').value) || 100;
+      const artStyle = document.querySelector('input[name="artPreset"]:checked').value;
+      const description = document.getElementById('pubDescription').value.trim();
+
+      const newItem = {
+        id: Date.now(),
+        type,
+        title,
+        artist,
+        technique,
+        priceEur,
+        rating: 5.0,
+        reviewsCount: 1,
+        imageUrl: state.uploadedImageDataUrl || null,
+        imageFit: 'object-cover',
+        artStyle,
+        featured: true,
+        description,
+        dimensions: document.getElementById('pubDimensions').value,
+        duration: document.getElementById('pubDuration').value,
+        level: document.getElementById('pubLevel').value,
+        certificate: 'Œuvre publiée directement par l\'artiste avec certificat d\'authenticité.'
+      };
+
+      catalogItems.unshift(newItem);
+      state.uploadedImageDataUrl = null;
+      document.getElementById('pubFileName').textContent = 'Importer votre propre dessin (JPG, PNG, WebP)';
+      document.getElementById('pubImagePreviewBox').innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+      `;
+
+      closePublishModal();
+      document.getElementById('publishForm').reset();
+      togglePublishFields();
+
+      resetAllFilters();
+      document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+      showToast(`Votre annonce « ${title} » est en ligne !`);
+    }
+
+    function switchHowTab(mode) {
+      const buyerBtn = document.getElementById('howBuyerBtn');
+      const artistBtn = document.getElementById('howArtistBtn');
+      const buyerSteps = document.getElementById('howBuyerSteps');
+      const artistSteps = document.getElementById('howArtistSteps');
+
+      if (mode === 'buyer') {
+        buyerBtn.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-midnight text-midnight dark:text-white shadow-sm transition-all';
+        artistBtn.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 transition-all';
+        buyerSteps.classList.remove('hidden');
+        buyerSteps.classList.add('grid');
+        artistSteps.classList.add('hidden');
+        artistSteps.classList.remove('grid');
+      } else {
+        artistBtn.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-midnight text-midnight dark:text-white shadow-sm transition-all';
+        buyerBtn.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 transition-all';
+        artistSteps.classList.remove('hidden');
+        artistSteps.classList.add('grid');
+        buyerSteps.classList.add('hidden');
+        buyerSteps.classList.remove('grid');
+      }
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+
+    let toastTimeout;
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      msgEl.textContent = message;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3200);
+    }
+
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('scrollProgressBar');
+      if (!bar) return;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      bar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDetailModal();
+        closePublishModal();
+        toggleCartDrawer(false);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderWeeklySpotlight();
+      renderCatalog();
+      renderArtists();
+      renderCart();
+    });
+  </script>
+</body>
+</html>
